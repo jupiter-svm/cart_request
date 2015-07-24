@@ -2,14 +2,10 @@
 /* @var $this AddressController */
 /* @var $model Address */
 
-$this->breadcrumbs=array(
-	'Адреса'=>array('index'),
-	'Управление',
-);
-
 $this->menu=array(
 	array('label'=>'Список адресов', 'url'=>array('index')),
 	array('label'=>'Добавить адрес', 'url'=>array('create')),
+	array('label'=>'Группы адресов', 'url'=>'/admin/addressgroup'),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -49,6 +45,11 @@ $('.search-form form').submit(function(){
                     'filter'=>$users
                 ),
 		'address',
+                'id_address_group'=>array(
+                    'name'=>'id_address_group',
+                    'value'=>'$data->address_group->name',
+                    'filter'=>$groups
+                ),
 		'active'=>array(
                     'name'=>'active',
                     'value'=>'$data->active==1?"Доступен":"Не доступен"',

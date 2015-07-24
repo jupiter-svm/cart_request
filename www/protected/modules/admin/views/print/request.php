@@ -39,6 +39,13 @@
     
     <div class="left-column">Период</div>
     <div class="right-column"><span class="report-bold" id="rep-time-period"><?php echo $time_period ?></span></div>
+    <?php
+        if(isset($group_name))
+        {
+            echo "<br />";
+            echo "<div id='print_group_center'>".$group_name."</div>";
+        }
+    ?>
     <br />
     <br />
 

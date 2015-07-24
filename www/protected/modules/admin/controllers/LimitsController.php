@@ -28,7 +28,7 @@ class LimitsController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index', 'view', 'create', 'update'),
+				'actions'=>array('index', 'view', 'create', 'update', 'move'),
 				'roles'=>array('2'),
 			),			
 			array('deny',  // deny all users
@@ -108,6 +108,11 @@ class LimitsController extends Controller
 	 */
 	public function actionIndex()
 	{
+                if(isset($_POST['statusval']))
+                {                    
+                    $model=Limits::updateStatusPosition($_POST['id'], $_POST['statusval']);
+                }
+            
 		$model=new Limits('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Limits']))
@@ -117,7 +122,51 @@ class LimitsController extends Controller
 			'model'=>$model, 'time_period'=>TimePeriod::all(),
                         'user_filter'=>User::allActive()
 		));
-	}        
+	}   
+        
+        /**
+         * Копирование лимитов
+         */
+        public function actionMove()
+        {
+                 if(isset($_POST['from']) && isset($_POST['to']))
+                {    //Флаг наличия ошибок  
+                     $errFlag=0;
+                     
+                    if($_POST['from']==$_POST['to'])
+                    {
+                        Yii::app()->user->setFlash('equal', 'Нельзя копировать лимиты в одном периоде');
+                        $errFlag=1; //Устанавливаю флаг наличия ошибок
+                    }
+                    
+                    if(Limits::getLimitsCount($_POST['to']))
+                    {
+                        Yii::app()->user->setFlash('notempty', 'В данном периоде уже есть лимиты');
+                        $errFlag=1; //Устанавливаю флаг наличия ошибок
+                    }
+                    
+                    if(!$errFlag)
+                    {
+                        if(Limits::moveLimits($_POST['from'], $_POST['to']))
+                        {
+                            Yii::app()->user->setFlash('success', 'Данные успешно скопированы');
+                        }
+                        else
+                        {
+                            Yii::app()->user->setFlash('nosuccess', 'Не удалось скопировать данные');
+                        }
+                    }
+                }
+            
+                $model=new Limits('search');
+		$model->unsetAttributes();  // clear any default values
+		if(isset($_GET['Limits']))
+			$model->attributes=$_GET['Limits'];
+
+		$this->render('move',array(
+			'model'=>$model, 'time_period'=>TimePeriod::all()
+		));
+        }
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.

@@ -5,6 +5,7 @@
  *
  * The followings are the available columns in table 'cms_address':
  * @property integer $id
+ * @property integer $id_address_group
  * @property integer $id_user
  * @property string $address
  * @property integer $active
@@ -28,11 +29,12 @@ class Address extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('id_user, address', 'required'),
+                        array('id_address_group', 'safe'),
 			array('id_user, active', 'numerical', 'integerOnly'=>true),
 			array('address', 'length', 'max'=>255),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, id_user, address, active', 'safe', 'on'=>'search'),
+			array('id, id_user, address, active, id_address_group', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -45,6 +47,7 @@ class Address extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
                     'user'=>array(self::BELONGS_TO, 'User', 'id_user'),
+                    'address_group' => array(self::BELONGS_TO, 'AddressGroup', 'id_address_group'),
 		);
 	}
 
@@ -55,11 +58,13 @@ class Address extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
+			'id_address_group' => 'Группа',
 			'id_user' => 'Пользователь',
 			'address' => 'Адрес',
 			'active' => 'Доступность',
 		);
-	}
+	}       
+        
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
@@ -81,6 +86,7 @@ class Address extends CActiveRecord
                 $criteria->with='user';
 
 		$criteria->compare('id',$this->id);
+		$criteria->compare('id_address_group',$this->id_address_group);
 		$criteria->compare('id_user',$this->id_user);
 		$criteria->compare('address',$this->address,true);
 		$criteria->compare('active',$this->active);

@@ -253,6 +253,44 @@ class Request extends CActiveRecord
                                                        )->queryAll();            
             
             return $time_period['0']['amount'];
+        }     
+        
+        /**
+         * Получаю количество групп адресов в заявке
+         * @param type $id_request - ID заявки
+         * @return type
+         */
+        public static function getRequestAddresses($id_request)
+        { 
+            $count=Yii::app()->db->createCommand("SELECT DISTINCT(ca.`id_address_group`) AS groups
+                                                  FROM `cms_request` cr
+                                                        INNER JOIN `cms_request_position` crp ON(crp.`id_request`=cr.`id`)
+                                                        INNER JOIN `cms_cartridge` cc ON(cc.`id`=crp.`id_cartridge`)
+                                                        INNER JOIN `cms_address` ca ON(ca.`id`=crp.`id_address`)
+                                                  WHERE cr.`id`='$id_request'"
+                                                )->queryAll();            
+            return count($count);
+        }      
+        
+        /**
+         * Получаю названия групп адресов в заявке
+         * @param type $id_request - ID заявки
+         * @return type
+         */
+        public static function getRQAddrNames($id_request)
+        { 
+            $groups=Yii::app()->db->createCommand("SELECT	
+                                                        DISTINCT(ca.`id_address_group`) AS groups,
+                                                        cag.`name`
+                                                   FROM `cms_request` cr
+                                                        INNER JOIN `cms_request_position` crp ON(crp.`id_request`=cr.`id`)
+                                                        INNER JOIN `cms_cartridge` cc ON(cc.`id`=crp.`id_cartridge`)
+                                                        INNER JOIN `cms_address` ca ON(ca.`id`=crp.`id_address`)
+                                                        INNER JOIN `cms_address_group` cag ON(cag.`id`=ca.`id_address_group`)
+                                                   WHERE cr.`id`='$id_request'"
+                                                )->queryAll();            
+            
+            return $groups;
         }       
         
         /**

@@ -2,11 +2,6 @@
 /* @var $this RequestController */
 /* @var $model Request */
 
-$this->breadcrumbs=array(
-	'Заявки'=>array('index'),
-	'Управление',
-);
-
 Yii::app()->clientScript->registerScript('search', "
 $('.search-button').click(function(){
 	$('.search-form').toggle();
@@ -26,7 +21,7 @@ $('.search-form form').submit(function(){
 
 <?php echo $test; ?>
 
-<?php echo CHtml::link('Расшеренный поиск','#',array('class'=>'search-button')); ?>
+<?php echo CHtml::link('Расширенный поиск','#',array('class'=>'search-button')); ?>
 <div class="search-form" style="display:none">
 <?php $this->renderPartial('_search',array(
 	'model'=>$model, 'time_period'=>$time_period, 'users'=>$users
@@ -112,8 +107,9 @@ $('.search-form form').submit(function(){
                         'buttons'=>array(
                                 'print'=>array(
                                     'label'=>'Вид для печати',
-                                    'url'=>'Yii::app()->createUrl("admin/print/request", array("id"=>$data->id))',
-                                    'imageUrl'=>Yii::app()->request->baseUrl.'/images/print.png'
+                                    'url'=>'Yii::app()->createUrl("admin/print/index/", array("id"=>$data->id))',
+                                    'imageUrl'=>Yii::app()->request->baseUrl.'/images/print.png',
+                                    'options'=>array('target'=>'_blank')
                             )
                         )                      
 		),

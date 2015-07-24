@@ -70,7 +70,9 @@ class AddressController extends Controller
 		}
 
 		$this->render('create',array(
-			'model'=>$model, 'users'=>$users
+			'model'=>$model,
+                        'users'=>$users,
+                        'groups'=>AddressGroup::all()
 		));
 	}
 
@@ -97,7 +99,9 @@ class AddressController extends Controller
 		}
 
 		$this->render('update',array(
-			'model'=>$model, 'users'=>$users
+			'model'=>$model,
+                        'users'=>$users,
+                        'groups'=>AddressGroup::getAll()
 		));
 	}	
 
@@ -115,7 +119,9 @@ class AddressController extends Controller
 			$model->attributes=$_GET['Address'];
 
 		$this->render('index',array(
-			'model'=>$model,'users'=>$user_filter
+			'model'=>$model, 
+                        'users'=>$user_filter,
+                        'groups'=>AddressGroup::all()
 		));
 	}
 

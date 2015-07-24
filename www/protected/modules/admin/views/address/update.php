@@ -2,12 +2,6 @@
 /* @var $this AddressController */
 /* @var $model Address */
 
-$this->breadcrumbs=array(
-	'Адреса'=>array('index'),
-	$model->id=>array('view','id'=>$model->id),
-	'Обновление',
-);
-
 $this->menu=array(
 	array('label'=>'Список адресов', 'url'=>array('index')),
 	array('label'=>'Добавить адрес', 'url'=>array('create')),
@@ -19,4 +13,4 @@ $this->menu=array(
 <br />
 <br />
 
-<?php $this->renderPartial('_form', array('model'=>$model, 'users'=>$users)); ?>
+<?php $this->renderPartial('_form', array('model'=>$model, 'users'=>$users, 'groups'=>$groups)); ?>

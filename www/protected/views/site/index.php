@@ -6,15 +6,16 @@ $this->pageTitle=Yii::app()->name;
 
 <br />
 
-<?php
+<?php 
 
-    if(count($this->getSetting()->mpage_topic)>0) {
+    if($this->getSetting()->mpage_topic!='') {
         echo '<div id="mpage-topic">'.$this->getSetting()->mpage_topic.'</div>';
     }   
 
      if(count($time_period_active))
     {
 ?>
+    <br />
     <b>Доступны временные интервалы для формирования заявок:</b>
     <br />
     <br />
@@ -22,7 +23,7 @@ $this->pageTitle=Yii::app()->name;
 
     <?php         
          foreach($time_period_active as $item) {
-             echo '<li>'.$item.'</li>';
+             echo '<li class="mpage_tperiod">'.$item.'</li>';
          }    
 ?>
     </ul>

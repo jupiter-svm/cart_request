@@ -30,6 +30,12 @@
 		<?php echo $form->textField($model,'address',array('size'=>60,'maxlength'=>255)); ?>
 		<?php echo $form->error($model,'address'); ?>
 	</div>
+        
+        <div class="row">
+		<?php echo $form->labelEx($model,'id_address_group'); ?>
+		<?php echo $form->dropDownList($model,'id_address_group', $groups, array('empty'=>'')); ?>
+		<?php echo $form->error($model,'id_address_group'); ?>
+	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'active'); ?>

@@ -2,14 +2,10 @@
 /* @var $this LimitsController */
 /* @var $model Limits */
 
-$this->breadcrumbs=array(
-	'Лимиты'=>array('index'),
-	'Управление',
-);
-
 $this->menu=array(
 	array('label'=>'Список лимитов', 'url'=>array('index')),
 	array('label'=>'Создать лимит', 'url'=>array('create')),
+	array('label'=>'Копировать лимиты', 'url'=>array('move')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -31,19 +27,36 @@ $('.search-form form').submit(function(){
 <br />
 <br />
 
-<?php echo CHtml::link('Продвинутый поиск','#',array('class'=>'search-button')); ?>
+<?php echo CHtml::link('Расширенный поиск','#',array('class'=>'search-button')); ?>
 <div class="search-form" style="display:none">
 <?php $this->renderPartial('_search',array(
 	'model'=>$model, 'user_filter'=>$user_filter, 'time_period'=>$time_period
 )); ?>
 </div><!-- search-form -->
 
+<br />
+<br />
+
+<?php
+    echo CHtml::form();
+    echo CHtml::dropDownList('statusval','0', array('0'=>'Активен','1'=>'Удалён'));
+    echo '&nbsp;';
+    echo '&nbsp;';
+    echo '&nbsp;';
+    echo CHtml::submitButton('Обновить статус', array('name'=>'reqstatus'));
+?>
+
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'limits-grid',
+        'selectableRows'=>2,
 	'dataProvider'=>$model->search(),
         'template'=>'{summary}{pager}{items}{pager}',
 	'filter'=>$model,
 	'columns'=>array(
+                array(
+                    'class'=>'CCheckBoxColumn',
+                    'id'=>'id'
+                ),
 		'id_user'=>array(
                     'header'=>'Пользователь',
                     'name'=>'id_user',

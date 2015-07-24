@@ -77,7 +77,7 @@ class UserController extends Controller
                     
                     if(User::updatePass(md5($newPass), $_POST['User']['email']))
                     {                    
-                        mail($_POST['User']['email'],'Восстановление пароля','Новый пароль: '.$newPass,$headers);
+                        mail($_POST['User']['email'],'Восстановление пароля','Новый пароль: '.$newPass);
                         Yii::app()->user->setFlash('contact','Новый пароль выслан на указанный почтовый ящик'); 
                     }
                     else

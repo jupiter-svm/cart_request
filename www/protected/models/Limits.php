@@ -142,7 +142,37 @@ class Limits extends CActiveRecord
                                                     "SELECT SUM(`limit`) AS `limit` FROM `cms_limits` "
                                                     . "WHERE `id_time_period`='$id_time_period'"
                                                  )->queryAll();
+      
             return $limit;
+        }
+        
+        //Меняю статус лимита (групповое изменение)
+        public static function updateStatusPosition($id, $status)
+        {
+            return self::model()->updateByPk($id, array('deleted'=>$status));
+        }
+        
+        /**
+         * 
+         * @param type $id_time_period - ID временного периода
+         * @return type
+         */
+        public static function getLimitsCount($id_time_period)
+        {            
+            $limit=Yii::app()->db->createCommand("SELECT COUNT(*) AS count FROM `cms_limits` " 
+                                                                . "WHERE `cms_limits`.`id_time_period`='$id_time_period'")->queryAll();            
+            return $limit[0]['count'];
+        }
+        
+        public static function moveLimits($from, $to)
+        {
+            $result=Yii::app()->db->createCommand("INSERT INTO `cms_limits` (`id_user`, `id_time_period`, `limit`, `comment`, `deleted`)
+                                                    SELECT 
+                                                            `id_user`, '$to', `limit`, `comment`, `deleted`
+                                                    FROM `cms_limits` 
+                                                    WHERE `cms_limits`.`id_time_period`='$from'"
+                                                 )->execute();     
+            return $result;
         }
 
 	/**

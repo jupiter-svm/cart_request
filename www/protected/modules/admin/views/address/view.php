@@ -2,11 +2,6 @@
 /* @var $this AddressController */
 /* @var $model Address */
 
-$this->breadcrumbs=array(
-	'Адреса'=>array('index'),
-	$model->id,
-);
-
 $this->menu=array(
 	array('label'=>'Список адресов', 'url'=>array('index')),
 	array('label'=>'Добавить адрес', 'url'=>array('create')),
@@ -26,6 +21,10 @@ $this->menu=array(
                     'value'=>$model->user->surname.' '.$model->user->name.' '.$model->user->lastname
                 ),
 		'address',
+                'id_address_group'=>array(
+                    'name'=>'id_address_group',
+                    'value'=>$model->address_group->name
+                ),
 		'active'=>array(
                     'name'=>'active',
                     'value'=>$model->active==1?"Доступно":"Не доступно"

@@ -121,6 +121,34 @@ class RequestPosition extends CActiveRecord
             return $sumCriteria;
         }
         
+        //Вывод суммы заявки по группам адресов
+        public static function sumAddrPeriod($id, $id_period)
+        {
+            if(!isset($id_period))
+            {
+                $sumCriteria=Yii::app()->db->createCommand("SELECT SUM(rp.amount*rp.price) as sum FROM cms_cartridge_price cp
+                                                                INNER JOIN cms_cartridge c ON(cp.id_cartridge=c.id)
+                                                                INNER JOIN cms_request_position rp ON(rp.id_cartridge=c.id)
+                                                            WHERE rp.`id_request`=$id AND 
+                                                              rp.`deleted`='0'"
+                                                           )->queryAll();
+            }
+            else
+            {
+                $sumCriteria=Yii::app()->db->createCommand("SELECT SUM(rp.amount*rp.price) as sum FROM cms_cartridge_price cp
+                                                                INNER JOIN cms_cartridge c ON(cp.id_cartridge=c.id)
+                                                                INNER JOIN cms_request_position rp ON(rp.id_cartridge=c.id)
+                                                                INNER JOIN cms_address ca ON(ca.id=rp.id_address)
+                                                                INNER JOIN cms_address_group cag ON(cag.id=ca.id_address_group)
+                                                            WHERE rp.`id_request`=$id AND 
+                                                                  cag.id=$id_period AND
+                                                                  rp.`deleted`='0'"
+                                                           )->queryAll();
+            }
+            
+            return $sumCriteria;
+        }
+        
         //Удаление позиций заявки
         public static function deletePosition($id)
         {
@@ -180,16 +208,33 @@ class RequestPosition extends CActiveRecord
          * Вывожу список позиций для печати
          * @param type $id_request - Передаю ID заявки
          */
-        public static function printRequest($id_request)
+        public static function printRequest($id_request, $id_group)
         {
-             $printRes=Yii::app()->db->createCommand("SELECT cc.`name`, crp.`amount`, crp.`price`, (crp.`amount`*crp.`price`) AS summ,
-                                                              ca.`address`, crp.`comment`
-                                                      FROM `cms_request_position` crp
-                                                              INNER JOIN `cms_cartridge` cc ON(cc.`id`=crp.`id_cartridge`)
-                                                              INNER JOIN `cms_address` ca ON(ca.`id`=crp.`id_address`)
-                                                      WHERE crp.`id_request`=$id_request AND
-                                                            crp.`deleted`='0'"
-                                                       )->queryAll();
+            if(!isset($id_group))
+            {            
+                $printRes=Yii::app()->db->createCommand("SELECT cc.`name`, crp.`amount`, crp.`price`, (crp.`amount`*crp.`price`) AS summ,
+                                                                 ca.`address`, crp.`comment`
+                                                         FROM `cms_request_position` crp
+                                                                 INNER JOIN `cms_cartridge` cc ON(cc.`id`=crp.`id_cartridge`)
+                                                                 INNER JOIN `cms_address` ca ON(ca.`id`=crp.`id_address`)
+                                                         WHERE crp.`id_request`=$id_request AND
+                                                               crp.`deleted`='0'"
+                                                          )->queryAll();
+            }
+            else
+            {
+                $printRes=Yii::app()->db->createCommand("SELECT cc.`name`, crp.`amount`, crp.`price`, (crp.`amount`*crp.`price`) AS summ,
+                                                                 ca.`address`, crp.`comment`
+                                                         FROM `cms_request_position` crp
+                                                                 INNER JOIN `cms_cartridge` cc ON(cc.`id`=crp.`id_cartridge`)
+                                                                 INNER JOIN `cms_address` ca ON(ca.`id`=crp.`id_address`)
+                                                                 INNER JOIN `cms_address_group` cag ON(cag.`id`=ca.`id_address_group`)
+                                                         WHERE crp.`id_request`=$id_request AND
+                                                               cag.`id`=$id_group AND 
+                                                               crp.`deleted`='0'"
+                                                          )->queryAll();
+            }
+            
             return $printRes;
         }
         

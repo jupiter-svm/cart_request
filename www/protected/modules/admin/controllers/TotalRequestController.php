@@ -60,17 +60,24 @@ class TotalRequestController extends Controller
                 }
                 else
                 {
-                    $time_period='1';
+                    if(TimePeriod::lastPeriod()!='')
+                    {
+                        $time_period=TimePeriod::lastPeriod();
+                    }
+                    else
+                    {
+                        $time_period='1';
+                    }
                 }
                 
                 //Получаю сумму лимитов за временной период
                 $limit=Limits::getTotalLimit($time_period);                
-                
-                //Получаю сводную заявку из базы
-                $total_request=RequestPosition::totalRequest($time_period);
 
+                //Получаю сводную заявку из базы
+                $total_request=RequestPosition::totalRequest($time_period);               
+               
 		$this->render('index',array(
-			'time_periods'=>TimePeriod::all(), 
+			'time_periods'=>TimePeriod::allDesc(), 
                         'time_period'=>$time_period,
                         'total_request'=>$total_request,
                         'limit'=>$limit

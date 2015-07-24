@@ -28,7 +28,7 @@ class PrintController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('request'),
+				'actions'=>array('index', 'request'),
 				'roles'=>array('1','2'),
 			),		
                         array('allow', 
@@ -40,6 +40,24 @@ class PrintController extends Controller
 			),
 		);
 	}
+        
+        public function actionIndex($id)
+        {
+            $count=Request::getRequestAddresses($id);
+
+            if($count==1)
+            {
+                $this->actionRequest($id);                
+            }
+            else
+            {
+                 $this->render('index', array(
+                                                'groups'=>Request::getRQAddrNames($id),
+                                                'id'=>$id
+                              )
+                 );
+            }          
+        }
 
 	/**
          * Вид заявки для печати
@@ -47,10 +65,25 @@ class PrintController extends Controller
          */
 	public function actionRequest($id)
 	{
+                //Разделяю ID заявки и ID группы адресов
+                $id_split=split('-', $id);
+                
+                $id=$id_split['0'];
+                $id_group=$id_split['1'];               
+                
+                //Получаю имя группы
+                $group_name='';
+                
+                if(isset($id_group)) 
+                {
+                    $group_name=AddressGroup::getAddrName($id_group);
+                    $group_name=$group_name['0']['name'];
+                }
+                
                 //Сумма по заявке
-                $sum=RequestPosition::sum($id);                                
+                $sum=RequestPosition::sumAddrPeriod($id, $id_group);                                
             
-		$model=RequestPosition::printRequest($id);
+		$model=RequestPosition::printRequest($id, $id_group);
                 
                 //Получаю ФИО пользователя
                 $username=Request::getUser($id);
@@ -69,8 +102,8 @@ class PrintController extends Controller
                 $person=$person['0']['person_in_charge'];
             
 		$this->render('request',array(
-			'request'=>$model, 'sum'=>$sum, 'time_period'=>$time_period,
-                        'username'=>$username, 'departament'=>$departament, 'person'=>$person
+			'request'=>$model, 'sum'=>$sum, 'time_period'=>$time_period, 'username'=>$username,
+                        'departament'=>$departament, 'person'=>$person, 'group_name'=>$group_name
 		));
 	}
         

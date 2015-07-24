@@ -75,7 +75,8 @@ class SiteController extends Controller
 				$headers="From: $name <{$model->email}>\r\n".
 					"Reply-To: {$model->email}\r\n".
 					"MIME-Version: 1.0\r\n".
-					"Content-Type: text/plain; charset=UTF-8";
+					"Content-Type: text/html; charset=UTF-8";
+                                $model->body.='<br /><br />От: '.$model->email;
 
 				mail(Yii::app()->params['adminEmail'],$subject,$model->body,$headers);
 				Yii::app()->user->setFlash('contact','Благодарим за то, что связались с нами. Мы свяжемся с Вами в ближайшее время');

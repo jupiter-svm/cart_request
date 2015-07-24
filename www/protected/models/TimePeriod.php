@@ -69,7 +69,7 @@ class TimePeriod extends CActiveRecord
         {
             return array(
               'sort'=>array(
-                  'order'=>'id ASC'
+                  'order'=>'id DESC'
               )
             );
         }
@@ -123,6 +123,20 @@ class TimePeriod extends CActiveRecord
         public static function all()
         {          
             return CHtml::listData(self::model()->findAll(), 'id', 'description');
+        }
+        
+        //Сортированный в нисходящем порядке список
+        public static function allDesc()
+        {          
+            return CHtml::listData(self::model()->sort()->findAll(), 'id', 'description');
+        }
+        
+        //Получаю ID последнего временного периода
+        public static function lastPeriod()
+        {
+            $position=Yii::app()->db->createCommand("SELECT MAX(`id`) as ID FROM `cms_time_period`")->queryAll();
+            
+            return $position[0]['ID'];
         }
         
         /**
